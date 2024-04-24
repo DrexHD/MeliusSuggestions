@@ -242,9 +242,6 @@ public class CodecSyntaxParser {
                 }
                 case RegistryFileCodecAccess registryFileCodec -> {
 
-                    // This doesn't seem to work in all cases (eg: banner patterns)
-                    // Optional<HolderLookup.RegistryLookup<Object>> optional = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY).lookup(registryFileCodec.registryKey());
-
                     // TODO Allow inline
                     Optional<HolderLookup.RegistryLookup<Object>> optional = Minecraft.getInstance().level.registryAccess().lookup(registryFileCodec.registryKey());
                     if (optional.isPresent()) {
