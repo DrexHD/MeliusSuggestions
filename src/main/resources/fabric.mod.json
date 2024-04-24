@@ -1,0 +1,20 @@
+{
+	"schemaVersion": 1,
+	"id": "melius-suggestions",
+	"version": "${version}",
+	"name": "Melius Suggestions",
+	"description": "Adds item component and particle command suggestions",
+	"authors": [
+		"Drex"
+	],
+	"license": "MIT",
+	"icon": "assets/meliussuggestions/icon.png",
+	"environment": "client",
+	"mixins": [
+		"meliussuggestions.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.15.10",
+		"java": ">=21"
+	}
+}

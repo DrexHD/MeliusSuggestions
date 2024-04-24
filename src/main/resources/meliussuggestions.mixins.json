@@ -1,0 +1,35 @@
+{
+    "required": true,
+    "package": "me.drex.meliussuggestions.mixin",
+    "compatibilityLevel": "JAVA_21",
+    "mixins": [
+        "parser.ItemSyntaxParser$StateMixin",
+        "codec.Codec$RecursiveCodecMixin",
+        "codec.CompressedMapCodecMixin",
+        "codec.EitherCodecMixin",
+        "codec.ExtraCodecs$RecursiveMapCodecMixin",
+        "codec.HolderSetCodecMixin",
+        "codec.ListCodecMixin",
+        "parser.ParticleArgumentMixin",
+        "codec.RecordCodecBuilder$2Mixin",
+        "codec.RecordCodecBuilderMixin",
+        "codec.RegistryFileCodecMixin",
+        "codec.RegistryFixedCodecMixin",
+        "codec.StringRepresentable$EnumCodecMixin",
+        "codec.StringRepresentable$StringRepresentableCodecMixin",
+        "codec.UnitDecoderMixin",
+        "codec.field.FieldDecoderMixin",
+        "codec.field.OptionalFieldCodecMixin",
+        "codec.hint.Codec$2Mixin",
+        "codec.hint.Codec$4Mixin",
+        "codec.hint.RegistryMixin",
+        "codec.hint.TagKeyMixin",
+        "codec.hint.UUIDUtilMixin"
+    ],
+    "injectors": {
+        "defaultRequire": 1
+    },
+    "client": [
+        "CommandSuggestions$SuggestionsListMixin"
+    ]
+}
