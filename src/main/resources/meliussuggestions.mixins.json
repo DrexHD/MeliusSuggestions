@@ -3,14 +3,12 @@
     "package": "me.drex.meliussuggestions.mixin",
     "compatibilityLevel": "JAVA_21",
     "mixins": [
-        "parser.ItemSyntaxParser$StateMixin",
         "codec.Codec$RecursiveCodecMixin",
         "codec.CompressedMapCodecMixin",
         "codec.EitherCodecMixin",
         "codec.ExtraCodecs$RecursiveMapCodecMixin",
         "codec.HolderSetCodecMixin",
         "codec.ListCodecMixin",
-        "parser.ParticleArgumentMixin",
         "codec.RecordCodecBuilder$2Mixin",
         "codec.RecordCodecBuilderMixin",
         "codec.RegistryFileCodecMixin",
@@ -23,8 +21,11 @@
         "codec.hint.Codec$2Mixin",
         "codec.hint.Codec$4Mixin",
         "codec.hint.RegistryMixin",
+        "codec.hint.ResourceKeyMixin",
         "codec.hint.TagKeyMixin",
-        "codec.hint.UUIDUtilMixin"
+        "codec.hint.UUIDUtilMixin",
+        "parser.ItemSyntaxParser$StateMixin",
+        "parser.ParticleArgumentMixin"
     ],
     "injectors": {
         "defaultRequire": 1

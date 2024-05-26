@@ -32,6 +32,8 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.StringRepresentable;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -64,6 +66,7 @@ public class CodecSyntaxParser {
     private final List<Suggestion> suggestions = new ArrayList<>();
     private static final Object DUMMY = new Object();
     private static final Optional<Object> CONSUME = Optional.of(DUMMY);
+    public static final Logger LOGGER = LogManager.getLogger("melius-suggestions");
 
     public CodecSyntaxParser(StringReader reader) {
         this.reader = reader;
@@ -142,8 +145,12 @@ public class CodecSyntaxParser {
     public void parse(Codec<?> codec) {
         int cursor = reader.getCursor();
         try {
-            visitCodec(codec);
-        } catch (CommandSyntaxException ignored) {
+            try {
+                visitCodec(codec);
+            } catch (CommandSyntaxException ignored) {
+            }
+        } catch (Throwable t) {
+            LOGGER.error("Failed to parse '{}' as {}", reader.getString().substring(cursor), codec, t);
         }
         reader.setCursor(cursor);
 
@@ -203,17 +210,22 @@ public class CodecSyntaxParser {
                 case CodecHint<?> codecHint -> {
                     ResourceKey<? extends Registry<?>> resourceKey = codecHint.getResourceKeyHint();
                     if (codecHint.isUuidHint()) {
-                        UUID playerUUID = Minecraft.getInstance().player.getUUID();
+                        if (Minecraft.getInstance().player != null) {
+                            UUID playerUUID = Minecraft.getInstance().player.getUUID();
+                            List<String> playerValues = Arrays.stream(UUIDUtil.uuidToIntArray(playerUUID)).mapToObj(String::valueOf).toList();
+                            suggestList(playerValues, "Your Uuid");
+                        }
                         UUID randomUUID = UUID.randomUUID();
-                        List<String> playerValues = Arrays.stream(UUIDUtil.uuidToIntArray(playerUUID)).mapToObj(String::valueOf).toList();
                         List<String> randomValues = Arrays.stream(UUIDUtil.uuidToIntArray(randomUUID)).mapToObj(String::valueOf).toList();
-                        suggestList(playerValues, "Your Uuid");
                         suggestList(randomValues, "Random Uuid");
                         parseList(Codec.INT, 4);
                     } else if (resourceKey != null) {
-                        Optional<HolderLookup.RegistryLookup<Object>> optional = Minecraft.getInstance().level.registryAccess().lookup(resourceKey);
-                        Set<String> tagIds = optional.get().listTagIds().map(TagKey::location).map(ResourceLocation::toString).map(s -> '#' + s).collect(Collectors.toSet());
-                        expectStrings(tagIds, "ResourceKey hint");
+                        Optional<HolderLookup.RegistryLookup<Object>> optional = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY).lookup(resourceKey);
+
+                        if (optional.isPresent()) {
+                            Set<String> tagIds = optional.get().listTagIds().map(TagKey::location).map(ResourceLocation::toString).map(s -> '#' + s).collect(Collectors.toSet());
+                            expectStrings(tagIds, "ResourceKey hint");
+                        }
                     } else {
                         pass = true;
                     }
@@ -243,9 +255,11 @@ public class CodecSyntaxParser {
                 case RegistryFileCodecAccess registryFileCodec -> {
 
                     // TODO Allow inline
-                    Optional<HolderLookup.RegistryLookup<Object>> optional = Minecraft.getInstance().level.registryAccess().lookup(registryFileCodec.registryKey());
-                    if (optional.isPresent()) {
-                        expectStrings(optional.get().listElementIds().map(objectResourceKey -> objectResourceKey.location().toString()).collect(Collectors.toSet()), "RegistryFileCodecAccess");
+                    if (Minecraft.getInstance().level != null) {
+                        Optional<HolderLookup.RegistryLookup<Object>> optional = Minecraft.getInstance().level.registryAccess().lookup(registryFileCodec.registryKey());
+                        if (optional.isPresent()) {
+                            expectStrings(optional.get().listElementIds().map(objectResourceKey -> objectResourceKey.location().toString()).collect(Collectors.toSet()), "RegistryFileCodecAccess");
+                        }
                     }
                 }
                 case UnboundedMapCodec<?, ?> unboundedMapCodec -> parseUnboundedMap(unboundedMapCodec);
