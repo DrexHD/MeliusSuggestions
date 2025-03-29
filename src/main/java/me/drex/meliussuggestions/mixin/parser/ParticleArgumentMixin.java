@@ -9,6 +9,7 @@ import net.minecraft.commands.arguments.ParticleArgument;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
+import net.minecraft.nbt.TagParser;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -24,10 +25,10 @@ public abstract class ParticleArgumentMixin {
     private static CompletableFuture<Suggestions> suggestions;
 
     @Inject(
-        method = "readParticle(Lcom/mojang/brigadier/StringReader;Lnet/minecraft/core/particles/ParticleType;Lnet/minecraft/core/HolderLookup$Provider;)Lnet/minecraft/core/particles/ParticleOptions;",
+        method = "readParticle(Lnet/minecraft/nbt/TagParser;Lcom/mojang/brigadier/StringReader;Lnet/minecraft/core/particles/ParticleType;Lnet/minecraft/core/HolderLookup$Provider;)Lnet/minecraft/core/particles/ParticleOptions;",
         at = @At("HEAD")
     )
-    private static <T extends ParticleOptions> void addCustomParser(StringReader reader, ParticleType<T> particleType, HolderLookup.Provider provider, CallbackInfoReturnable<T> cir) {
+    private static <T extends ParticleOptions, O> void addCustomParser(TagParser<O> tagParser, StringReader reader, ParticleType<T> particleType, HolderLookup.Provider provider, CallbackInfoReturnable<T> cir) {
         CodecSyntaxParser parser = new CodecSyntaxParser(reader);
         parser.parse(particleType.codec().codec());
         suggestions = parser.getSuggestions();

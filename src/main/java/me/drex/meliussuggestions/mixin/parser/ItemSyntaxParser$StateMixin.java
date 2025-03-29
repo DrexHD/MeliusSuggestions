@@ -23,7 +23,7 @@ public abstract class ItemSyntaxParser$StateMixin {
     @Final
     private ItemParser.Visitor visitor;
 
-    @Inject(method = "readComponents", at = @At(value = "INVOKE", target = "Lnet/minecraft/commands/arguments/item/ItemParser$State;readComponent(Lnet/minecraft/core/component/DataComponentType;)V"))
+    @Inject(method = "readComponents", at = @At(value = "INVOKE", target = "Lnet/minecraft/commands/arguments/item/ItemParser$State;readComponent(Lnet/minecraft/nbt/TagParser;Lnet/minecraft/resources/RegistryOps;Lnet/minecraft/core/component/DataComponentType;)V"))
     private void addCustomParser(CallbackInfo ci, @Local DataComponentType<?> dataComponentType) {
         CodecSyntaxParser parser = new CodecSyntaxParser(reader);
         parser.parse(dataComponentType.codecOrThrow());

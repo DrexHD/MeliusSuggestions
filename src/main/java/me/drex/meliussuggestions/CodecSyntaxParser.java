@@ -39,11 +39,12 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
-import static net.minecraft.nbt.TagParser.ERROR_EXPECTED_KEY;
-import static net.minecraft.nbt.TagParser.ERROR_EXPECTED_VALUE;
-
 // TODO Performance benchmarks
 public class CodecSyntaxParser {
+
+    public static final SimpleCommandExceptionType ERROR_EXPECTED_KEY = new SimpleCommandExceptionType(Component.translatable("argument.nbt.expected.key"));
+    public static final SimpleCommandExceptionType ERROR_EXPECTED_VALUE = new SimpleCommandExceptionType(Component.translatable("argument.nbt.expected.value"));
+
 
     // Copied from TagParser
     public static final char ELEMENT_SEPARATOR = ',';
