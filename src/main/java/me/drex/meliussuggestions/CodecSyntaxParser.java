@@ -22,7 +22,6 @@ import me.drex.meliussuggestions.util.access.hint.UnitHint;
 import me.drex.meliussuggestions.util.access.hint.CodecHint;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.SharedSuggestionProvider;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.UUIDUtil;
@@ -220,7 +219,7 @@ public class CodecSyntaxParser {
                         suggestList(randomValues, "Random Uuid");
                         parseList(Codec.INT, 4);
                     } else if (resourceKey != null) {
-                        Optional<HolderLookup.RegistryLookup<Object>> optional = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY).lookup(resourceKey);
+                        Optional<Registry<Object>> optional = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY).lookup(resourceKey);
 
                         if (optional.isPresent()) {
                             Set<String> tagIds = optional.get().listTagIds().map(TagKey::location).map(ResourceLocation::toString).map(s -> '#' + s).collect(Collectors.toSet());
@@ -245,7 +244,7 @@ public class CodecSyntaxParser {
                     expectStrings(candidates, "StringRepresentable$EnumCodecAccess");
                 }
                 case RegistryFixedCodecAccess registryFixedCodec -> {
-                    Optional<HolderLookup.RegistryLookup<Object>> optional = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY).lookup(registryFixedCodec.registryKey());
+                    Optional<Registry<Object>> optional = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY).lookup(registryFixedCodec.registryKey());
 
                     if (optional.isPresent()) {
                         Set<String> entries = optional.get().listElementIds().map(ResourceKey::location).map(ResourceLocation::toString).collect(Collectors.toSet());
@@ -256,7 +255,7 @@ public class CodecSyntaxParser {
 
                     // TODO Allow inline
                     if (Minecraft.getInstance().level != null) {
-                        Optional<HolderLookup.RegistryLookup<Object>> optional = Minecraft.getInstance().level.registryAccess().lookup(registryFileCodec.registryKey());
+                        Optional<Registry<Object>> optional = Minecraft.getInstance().level.registryAccess().lookup(registryFileCodec.registryKey());
                         if (optional.isPresent()) {
                             expectStrings(optional.get().listElementIds().map(objectResourceKey -> objectResourceKey.location().toString()).collect(Collectors.toSet()), "RegistryFileCodecAccess");
                         }
